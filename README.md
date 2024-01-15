@@ -1,5 +1,5 @@
 # Lime
-The GenZ Approved language alternative JIT compiled by the dragon himself... LLVM
+The GenZ Approved programming language alternative, JIT compiled by the dragon himself... LLVM
 
 ## GenZ Approved Features
 Normal language keywords have alternates for the gen z people to feel safe.
