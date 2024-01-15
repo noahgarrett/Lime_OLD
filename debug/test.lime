@@ -1,4 +1,4 @@
-from "./debug/pallet.lime" import gimme_42;
+trans "pallet.lime" rn
 
 fn main() -> int {
     

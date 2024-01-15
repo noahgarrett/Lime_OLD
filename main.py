@@ -12,13 +12,28 @@ import llvmlite.binding as llvm
 from ctypes import CFUNCTYPE, c_int, c_float
 import time
 import os
+import argparse
 
 DEBUG_LEXER: bool = False
-DEBUG_PARSER: bool = True
-DEBUG_IR: bool = True
+DEBUG_PARSER: bool = False
+DEBUG_IR: bool = False
+
+# pyinstaller --onefile --name lime main.py
 
 if __name__ == '__main__':
-    with open(os.path.abspath("./debug/test.lime"), "r") as f:
+    # Handle arguments
+    arg_parser: argparse.ArgumentParser = argparse.ArgumentParser(description="Lime: The GenZ Approved programming language alternative")
+    
+    arg_parser.add_argument('input_file', type=str, help="File path to the main lime file")
+    
+    args = arg_parser.parse_args()
+
+    input_file = args.input_file
+    if input_file is None:
+        print("You must specify a file to run. Ex: `lime.exe main.lime`")
+        exit(1)
+
+    with open(os.path.abspath(input_file), "r") as f:
         code: str = f.read()
 
     # region AST Generation Pass

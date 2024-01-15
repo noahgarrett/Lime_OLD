@@ -102,7 +102,8 @@ GENZ_KEYWORDS: dict[str, TokenType] = {
     "sus": TokenType.IF,
     "imposter": TokenType.ELSE,
     "bruh": TokenType.FUNCTION,
-    "pause": TokenType.RETURN
+    "pause": TokenType.RETURN,
+    "trans": TokenType.IMPORT
 }
 
 def lookup_ident(ident: str) -> TokenType:
