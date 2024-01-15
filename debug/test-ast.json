@@ -1,0 +1,65 @@
+{
+   "Program": {
+      "statements": [
+         {
+            "FromImportStatement": {
+               "token": "from",
+               "file_path": "./debug/pallet.lime",
+               "imported_idents": [
+                  {
+                     "type": "IDENT",
+                     "literal": "gimme_42"
+                  }
+               ]
+            }
+         },
+         {
+            "FunctionStatement": {
+               "type": "FunctionStatement",
+               "name": {
+                  "type": "IdentifierLiteral",
+                  "value": "main"
+               },
+               "return_type": "int",
+               "parameters": [],
+               "body": {
+                  "type": "BlockStatement",
+                  "statements": [
+                     {
+                        "type": "ExpressionStatement",
+                        "expr": {
+                           "type": "CallExpression",
+                           "function": {
+                              "type": "IdentifierLiteral",
+                              "value": "printf"
+                           },
+                           "arguments": [
+                              {
+                                 "type": "StringLiteral",
+                                 "value": "pallet: %d\\n"
+                              },
+                              {
+                                 "type": "CallExpression",
+                                 "function": {
+                                    "type": "IdentifierLiteral",
+                                    "value": "gimme_42"
+                                 },
+                                 "arguments": []
+                              }
+                           ]
+                        }
+                     },
+                     {
+                        "type": "ReturnStatement",
+                        "return_value": {
+                           "type": "IntegerLiteral",
+                           "value": 0
+                        }
+                     }
+                  ]
+               }
+            }
+         }
+      ]
+   }
+}

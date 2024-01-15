@@ -1,0 +1,4 @@
+
+fn gimme_42() -> int {
+    return 42;
+}

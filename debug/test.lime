@@ -1,0 +1,8 @@
+from "./debug/pallet.lime" import gimme_42;
+
+fn main() -> int {
+    
+    printf("pallet: %d\n", gimme_42());
+
+    return 0;
+}

@@ -1,0 +1,57 @@
+bruh in_mandelbrot(xP, yP, n) {
+    let x = 0.0;
+    let y = 0.0;
+    let xtemp = 0.0;
+
+    while n > 0.0 {
+        xtemp = (x * x) - (y * y) + xP;
+        y = (2.0 * x * y) + yP;
+        x = xtemp;
+        n = n - 1.0;
+
+        if x * x + y * y > 4.0 {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+bruh mandel() {
+    let xmin = -2.0;
+    let xmax = 1.0;
+    let ymin = -1.5;
+    let ymax = 1.5;
+    let width = 80.0;
+    let height = 40.0;
+    let threshold = 1000.0;
+
+    let dx = (xmax - xmin) / width;
+    let dy = (ymax - ymin) / height;
+
+    let y = ymax;
+    let x = 0.0;
+
+    while y >= ymin {
+        x = xmin;
+
+        while x < xmax {
+            if in_mandelbrot(x, y, threshold) == 1 {
+                printf("*");
+            } else {
+                printf(".");
+            }
+
+            x = x + dx;
+        }
+
+        printf("\n");
+        y = y - dy;
+    }
+
+    return 0;
+}
+
+bruh main() {
+    return mandel();
+}
