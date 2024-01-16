@@ -15,8 +15,8 @@ import os
 import argparse
 
 DEBUG_LEXER: bool = False
-DEBUG_PARSER: bool = True
-DEBUG_IR: bool = True
+DEBUG_PARSER: bool = False
+DEBUG_IR: bool = False
 
 # pyinstaller --onefile --name lime main.py
 

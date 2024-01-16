@@ -1,0 +1,25 @@
+{
+  "name": "lime-lang",
+  "displayName": "Lime",
+  "description": "Lime Programming Language (GenZ Approved)",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "lime",
+      "aliases": ["Lime Programming Language", "lime"],
+      "extensions": [".lime"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "lime",
+      "scopeName": "main.lime",
+      "path": "./syntaxes/lime.tmLanguage.json"
+    }]
+  }
+}

@@ -1,7 +1,7 @@
-from "./debug/pallet.lime" import add;
-from "./debug/pallet.lime" import sub;
+from "pallet.lime" import add;
+from "pallet.lime" import sub;
 
-import "./debug/pallet.lime";
+import "pallet.lime";
 
 fn main() -> int {
     printf("gimme: %i %i\n", add(1, 2), sub(3, 2))
