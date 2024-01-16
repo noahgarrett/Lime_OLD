@@ -1,6 +1,6 @@
 from models.AST import Program, Node, Expression, Statement
 from models.AST import LetStatement, ExpressionStatement, BlockStatement, ReturnStatement, FunctionStatement, AssignStatement
-from models.AST import WhileStatement, IfExpression, ImportStatement, FromImportStatement
+from models.AST import WhileStatement, IfExpression, ImportStatement, FromImportStatement, ClassStatement
 from models.AST import InfixExpression, PrefixExpression, CallExpression
 from models.AST import IntegerLiteral, IdentifierLiteral, FloatLiteral, StringLiteral, BooleanLiteral, FunctionLiteral
 
@@ -9,6 +9,18 @@ import os
 
 from exec.Lexer import Lexer
 from exec.Parser import Parser
+
+from typing import TypedDict
+
+class ClassInfo(TypedDict):
+    cls: ir.LiteralStructType
+    parent: ir.LiteralStructType
+    fields_map: dict[str, ir.Type]
+    methods_map: dict[str, ir.Function]
+
+class PreParsedProgram(TypedDict):
+    program: Program
+    imported_names: list[str]
 
 class Compiler:
     def __init__(self) -> None:
@@ -28,6 +40,9 @@ class Compiler:
         # Keeping track of defined variables
         self.variables: dict[str, tuple] = {}
 
+        # Keeping track of defined classes
+        self.class_map: dict[str, ClassInfo] = {}
+
         # Defining a builtin functions
         self.__initialize_builtins()
 
@@ -36,6 +51,12 @@ class Compiler:
 
         # Random counter for entries
         self.counter = -1
+
+        # Dict to hold pre-parsed pallets that were globally imported
+        self.global_parsed_pallets: dict[str, Program] = {}
+
+        # Dict to hold pre-parsed pallets
+        self.parsed_pallets: dict[str, PreParsedProgram] = {}
     
     def inc_counter(self) -> int:
         self.counter += 1
@@ -65,6 +86,8 @@ class Compiler:
                 self.__visit_import_statement(node)
             case "FromImportStatement":
                 self.__visit_from_import_statement(node)
+            case "ClassStatement":
+                self.__visit_class_statement(node)
 
             # Expressions
             case "InfixExpression":
@@ -95,6 +118,10 @@ class Compiler:
     def __visit_import_statement(self, node: ImportStatement) -> None:
         file_path: str = node.file_path
 
+        if self.global_parsed_pallets.get(file_path) is not None or self.parsed_pallets.get(file_path) is not None:
+            print(f"[Lime Warning]: `{file_path}` is already imported globally or `from` imported higher up in the file.\n")
+            return
+
         with open(os.path.abspath(file_path), "r") as f:
             code: str = f.read()
 
@@ -110,8 +137,51 @@ class Compiler:
         
         self.compile(node=program)
 
+        self.global_parsed_pallets[file_path] = program
+
     def __visit_from_import_statement(self, node: FromImportStatement) -> None:
-        pass
+        file_path: str = node.file_path
+        imported_idents: list = node.imported_idents
+
+        if self.global_parsed_pallets.get(file_path) is not None:
+            print(f"[Lime Warning]: `{file_path}` is already imported globally\n")
+            return
+
+        pre_parsed_pallet: PreParsedProgram = self.parsed_pallets.get(file_path)
+        if pre_parsed_pallet is not None:
+            for export in pre_parsed_pallet['program'].exports:
+                for ident in imported_idents:
+                    if ident.literal in pre_parsed_pallet['imported_names']:
+                        print(f"[Lime Warning]: `{ident.literal}` is already imported from `{file_path}`\n")
+                        continue  # Not sure if we should completely error, or just send a warning
+
+                    if ident.literal == export.name.value:
+                        self.compile(node=export)
+            return
+
+        with open(os.path.abspath(file_path), "r") as f:
+            code: str = f.read()
+
+        l: Lexer = Lexer(source=code)
+        p: Parser = Parser(lexer=l)
+
+        program: Program = p.parse_program()
+        if len(p.errors) > 0:
+            print(f"Error with imported pallet: {file_path}")
+            for err in p.errors:
+                print(err)
+            exit(1)
+
+        for export in program.exports:
+            for ident in imported_idents:
+                if ident.literal == export.name.value:
+                    self.compile(node=export)
+
+        self.parsed_pallets[file_path] = {
+            'program': program,
+            'imported_names': [name.literal for name in imported_idents]
+        }
+        
 
     def __visit_let_statement(self, node: LetStatement) -> None:
         name: str = node.name.value
@@ -144,6 +214,10 @@ class Compiler:
         value = node.return_value
         value, Type = self.__resolve_value(value)
         self.builder.ret(value)
+
+    def __visit_class_statement(self, node: ClassStatement) -> None:
+        # TODO: FINISH THIS
+        pass
 
     def __visit_function_statement(self, node: FunctionStatement) -> None:
         name: str = node.name.value

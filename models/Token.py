@@ -55,6 +55,8 @@ class TokenType(Enum):
     FROM = "FROM"
     WHILE = "WHILE"
     FOR = "FOR"
+    CLASS = "CLASS"
+    EXPORT = "EXPORT"
 
     # Type Declaration
     # T_INT = "T_INT"
@@ -88,10 +90,12 @@ KEYWORDS: dict[str, TokenType] = {
     "import": TokenType.IMPORT,
     "from": TokenType.FROM,
     "while": TokenType.WHILE,
-    "for": TokenType.FOR
+    "for": TokenType.FOR,
+    "class": TokenType.CLASS,
+    "export": TokenType.EXPORT
 }
 
-TYPE_KEYWORDS: list[str] = ["int", "float", "str", "bool"]
+TYPE_KEYWORDS: list[str] = ["int", "float", "str", "bool", "void"]
 
 GENZ_KEYWORDS: dict[str, TokenType] = {
     "lit": TokenType.LET,
@@ -103,7 +107,9 @@ GENZ_KEYWORDS: dict[str, TokenType] = {
     "imposter": TokenType.ELSE,
     "bruh": TokenType.FUNCTION,
     "pause": TokenType.RETURN,
-    "trans": TokenType.IMPORT
+    "trans": TokenType.IMPORT,
+    "ass": TokenType.CLASS,
+    "yeet": TokenType.EXPORT
 }
 
 def lookup_ident(ident: str) -> TokenType:

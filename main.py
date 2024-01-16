@@ -15,8 +15,8 @@ import os
 import argparse
 
 DEBUG_LEXER: bool = False
-DEBUG_PARSER: bool = False
-DEBUG_IR: bool = False
+DEBUG_PARSER: bool = True
+DEBUG_IR: bool = True
 
 # pyinstaller --onefile --name lime main.py
 
@@ -32,6 +32,8 @@ if __name__ == '__main__':
     if input_file is None:
         print("You must specify a file to run. Ex: `lime.exe main.lime`")
         exit(1)
+
+    # input_file = "./debug/test.lime"
 
     with open(os.path.abspath(input_file), "r") as f:
         code: str = f.read()

@@ -28,6 +28,8 @@ class Expression(Node):
 class Program(Node):
     def __init__(self) -> None:
         self.statements: list[Statement] = []
+
+        self.exports: list[Statement] = []
     
     def token_literal(self) -> str:
         if len(self.statements) > 0:
@@ -47,7 +49,8 @@ class Program(Node):
     
     def json(self) -> dict:
         return {
-            "statements": [{stmt.type(): stmt.json()} for stmt in self.statements]
+            "statements": [{stmt.type(): stmt.json()} for stmt in self.statements],
+            "exports": [{stmt.type(): stmt.json()} for stmt in self.exports]
         }
     
 
@@ -131,6 +134,28 @@ class LetStatement(Statement):
             "name": self.name.json(),
             "value": self.value.json(),
             "value_type": self.value_type
+        }
+    
+class ClassStatement(Statement):
+    def __init__(self, token: Token, name: str = None, body = None) -> None:
+        self.token = token
+        self.name: str = name
+        self.body: BlockStatement = [] if body is None else body
+
+    def token_literal(self) -> str:
+        return self.token.literal
+    
+    def string(self) -> str:
+        return f"<Class {self.file_path}>"
+
+    def type(self) -> str:
+        return "ClassStatement"
+    
+    def json(self) -> dict:
+        return {
+            "token": self.token.literal,
+            "name": self.name,
+            "body": self.body.json()
         }
     
 class ImportStatement(Statement):

@@ -8,9 +8,27 @@
                "imported_idents": [
                   {
                      "type": "IDENT",
-                     "literal": "gimme_42"
+                     "literal": "add"
                   }
                ]
+            }
+         },
+         {
+            "FromImportStatement": {
+               "token": "from",
+               "file_path": "./debug/pallet.lime",
+               "imported_idents": [
+                  {
+                     "type": "IDENT",
+                     "literal": "sub"
+                  }
+               ]
+            }
+         },
+         {
+            "ImportStatement": {
+               "token": "import",
+               "file_path": "./debug/pallet.lime"
             }
          },
          {
@@ -36,15 +54,41 @@
                            "arguments": [
                               {
                                  "type": "StringLiteral",
-                                 "value": "pallet: %d\\n"
+                                 "value": "gimme: %i %i\\n"
                               },
                               {
                                  "type": "CallExpression",
                                  "function": {
                                     "type": "IdentifierLiteral",
-                                    "value": "gimme_42"
+                                    "value": "add"
                                  },
-                                 "arguments": []
+                                 "arguments": [
+                                    {
+                                       "type": "IntegerLiteral",
+                                       "value": 1
+                                    },
+                                    {
+                                       "type": "IntegerLiteral",
+                                       "value": 2
+                                    }
+                                 ]
+                              },
+                              {
+                                 "type": "CallExpression",
+                                 "function": {
+                                    "type": "IdentifierLiteral",
+                                    "value": "sub"
+                                 },
+                                 "arguments": [
+                                    {
+                                       "type": "IntegerLiteral",
+                                       "value": 3
+                                    },
+                                    {
+                                       "type": "IntegerLiteral",
+                                       "value": 2
+                                    }
+                                 ]
                               }
                            ]
                         }
@@ -60,6 +104,7 @@
                }
             }
          }
-      ]
+      ],
+      "exports": []
    }
 }
