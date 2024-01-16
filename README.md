@@ -19,7 +19,7 @@ yeet bruh gimme_42() -> int {
 
 ```js
 // Example GenZ Approved Program `main.lime`
-trans "pallet.lime" rn
+from "pallet.lime" trans gimmie_42 rn
 
 ass Box { // **Classes Under Development**
     bruh __init__() -> void {
@@ -31,7 +31,7 @@ bruh main() -> int {
     lit a: int be 25 rn
 
     sus a == 25 {
-        printf("oh boi") rn
+        printf("oh boi %i\n", gimmie_42()) rn
     } imposter {
         printf("yesssssir") rn
     }
