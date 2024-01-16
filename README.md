@@ -8,9 +8,24 @@ Normal language keywords have alternates for the gen z people to feel safe.
 - `;` -> `rn` | `=` -> `be` | `let` -> `lit`
 - `if/else` -> `sus/imposter`
 - `trans` -> `import`
+- `ass` -> `class`
+- `export` -> `yeet`
 ```js
-// Example GenZ Approved Program
+// Example Lime Pallet `pallet.lime`
+yeet bruh gimme_42() -> int {
+    pause 42 rn
+}
+```
+
+```js
+// Example GenZ Approved Program `main.lime`
 trans "pallet.lime" rn
+
+ass Box { // **Classes Under Development**
+    bruh __init__() -> void {
+        
+    }
+}
 
 bruh main() -> int {
     lit a: int be 25 rn
@@ -41,6 +56,7 @@ fn main() -> int {
     - int
     - float
     - str
+    - void
 
 - Function Definitions + Function Calling
     - **TEMP** Strings are not allowed to be returned from functions. Working out a bug here
@@ -120,7 +136,18 @@ import "./pallet.lime"
 ```
 
 - From Imports
-    - **IN DEVELOPMENT**
 ```js
 from "./pallet.lime" import gimme_42
+```
+
+- Exporting from files / pallets
+```js
+export fn add(a: int, b: int) -> int {
+    return a + b;
+}
+
+export fn sub(a: int, b: int) -> int {
+    return a - b;
+}
+export let CONSTANT_VARIABLE: int = 69; // STILL UNDER DEVELOPMENT FOR VARIABLES
 ```

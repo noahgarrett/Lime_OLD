@@ -4,7 +4,7 @@ from typing import Callable
 
 # AST Imports
 from models.AST import Statement, Expression, Program, ExpressionStatement, PrefixExpression, InfixExpression, IntegerLiteral, FloatLiteral
-from models.AST import IdentifierLiteral, LetStatement, BooleanLiteral, IfExpression, BlockStatement, AssignStatement, ReturnStatement
+from models.AST import IdentifierLiteral, LetStatement, BooleanLiteral, IfExpression, BlockStatement, AssignStatement, ReturnStatement, ClassStatement
 from models.AST import FunctionLiteral, CallExpression, StringLiteral, ArrayLiteral, HashLiteral, IndexExpression, ImportStatement, FromImportStatement
 from models.AST import WhileStatement, ForStatement, FunctionStatement
 
@@ -81,6 +81,9 @@ class Parser:
             TokenType.LBRACKET: self.__parse_index_expression
         }
 
+        # Store all exports to be injected into the Program AST Node
+        self.exports: list[Statement] = []
+
         # Populate the current_token and peek_token
         self.__next_token()
         self.__next_token()
@@ -136,6 +139,8 @@ class Parser:
             
             self.__next_token()
         
+        program.exports = self.exports
+
         return program
     # endregion
 
@@ -159,6 +164,10 @@ class Parser:
                 return self.__parse_for_statement()
             case TokenType.FUNCTION:
                 return self.__parse_function_statement()
+            case TokenType.CLASS:
+                return self.__parse_class_statement()
+            case TokenType.EXPORT:
+                return self.__parse_export_statement()
             case _:
                 return self.__parse_expression_statement()
             
@@ -345,6 +354,38 @@ class Parser:
         stmt.body = self.__parse_block_statement()
 
         return stmt
+    
+    def __parse_class_statement(self) -> ClassStatement:
+        """class <name> { }"""
+        stmt: ClassStatement = ClassStatement(token=self.current_token)
+
+        if not self.__expect_peek(TokenType.IDENT):
+            return None
+        
+        stmt.name = self.current_token.literal
+
+        if not self.__expect_peek(TokenType.LBRACE):
+            return None
+        
+        stmt.body = self.__parse_block_statement()
+
+        return stmt
+    
+    def __parse_export_statement(self) -> list[Statement]:
+        if self.__peek_token_is(TokenType.FUNCTION):
+            self.__next_token()
+            fn: FunctionStatement = self.__parse_function_statement()
+            self.exports.append(fn)
+            return fn
+        
+        if self.__peek_token_is(TokenType.LET):
+            self.__next_token()
+            let: LetStatement = self.__parse_let_statement()
+            self.exports.append(let)
+            return let
+        
+        print(f"Cannot export a {self.peek_token.type()}")
+        return None
         
     # endregion
 

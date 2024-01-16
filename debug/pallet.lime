@@ -1,4 +1,8 @@
 
-fn gimme_42() -> int {
-    return 42;
+export fn add(a: int, b: int) -> int {
+    return a + b;
+}
+
+export fn sub(a: int, b: int) -> int {
+    return a - b;
 }

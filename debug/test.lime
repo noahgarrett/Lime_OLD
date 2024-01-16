@@ -1,8 +1,10 @@
-trans "pallet.lime" rn
+from "./debug/pallet.lime" import add;
+from "./debug/pallet.lime" import sub;
+
+import "./debug/pallet.lime";
 
 fn main() -> int {
-    
-    printf("pallet: %d\n", gimme_42());
+    printf("gimme: %i %i\n", add(1, 2), sub(3, 2))
 
     return 0;
 }
