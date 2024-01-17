@@ -6,3 +6,11 @@ export fn add(a: int, b: int) -> int {
 export fn sub(a: int, b: int) -> int {
     return a - b;
 }
+
+fn test_string() -> str {
+    return "apple";
+}
+
+fn test_void() -> void {
+    printf("Void function");
+}

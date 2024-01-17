@@ -2,6 +2,8 @@ from exec.Lexer import Lexer
 from exec.Parser import Parser
 from exec.Compiler import Compiler
 
+from exec.C_Compiler import C_Compiler
+
 from models.AST import Program
 from models.Token import TokenType, Token
 
@@ -15,25 +17,28 @@ import os
 import argparse
 
 DEBUG_LEXER: bool = False
-DEBUG_PARSER: bool = False
-DEBUG_IR: bool = False
+DEBUG_PARSER: bool = True
+DEBUG_IR: bool = True
+
+DEBUG_LLVM: bool = False
+DEBUG_C: bool = True
 
 # pyinstaller --onefile --name lime main.py
 
 if __name__ == '__main__':
     # Handle arguments
-    arg_parser: argparse.ArgumentParser = argparse.ArgumentParser(description="Lime: The GenZ Approved programming language alternative")
+    # arg_parser: argparse.ArgumentParser = argparse.ArgumentParser(description="Lime: The GenZ Approved programming language alternative")
     
-    arg_parser.add_argument('input_file', type=str, help="File path to the main lime file")
+    # arg_parser.add_argument('input_file', type=str, help="File path to the main lime file")
     
-    args = arg_parser.parse_args()
+    # args = arg_parser.parse_args()
 
-    input_file = args.input_file
-    if input_file is None:
-        print("You must specify a file to run. Ex: `lime.exe main.lime`")
-        exit(1)
+    # input_file = args.input_file
+    # if input_file is None:
+    #     print("You must specify a file to run. Ex: `lime.exe main.lime`")
+    #     exit(1)
 
-    # input_file = "./debug/test.lime"
+    input_file = "./debug/test.lime"
 
     with open(os.path.abspath(input_file), "r") as f:
         code: str = f.read()
@@ -61,43 +66,64 @@ if __name__ == '__main__':
     if DEBUG_PARSER:
         ast_to_json(program=program)
     # endregion
+        
+    if DEBUG_LLVM:
+        c: Compiler = Compiler()
+        c.compile(node=program)
 
-    c: Compiler = Compiler()
-    c.compile(node=program)
+        # Output Steps
+        module: ir.Module = c.module
+        module.triple = llvm.get_default_triple()
 
-    # Output Steps
-    module: ir.Module = c.module
-    module.triple = llvm.get_default_triple()
+        if DEBUG_IR:
+            # Print the IR to debug file
+            with open("./debug/test-ir.ll", "w") as f:
+                f.write(str(module))
+        
+        llvm.initialize()
+        llvm.initialize_native_target()
+        llvm.initialize_native_asmprinter()
 
-    if DEBUG_IR:
-        # Print the IR to debug file
-        with open("./debug/test-ir.ll", "w") as f:
-            f.write(str(module))
-    
-    llvm.initialize()
-    llvm.initialize_native_target()
-    llvm.initialize_native_asmprinter()
+        try:
+            llvm_ir_parsed = llvm.parse_assembly(str(module))
+            llvm_ir_parsed.verify()
+        except Exception as e:
+            print(e)
+            raise
 
-    try:
-        llvm_ir_parsed = llvm.parse_assembly(str(module))
-        llvm_ir_parsed.verify()
-    except Exception as e:
-        print(e)
-        raise
+        target_machine = llvm.Target.from_default_triple().create_target_machine()
 
-    target_machine = llvm.Target.from_default_triple().create_target_machine()
+        engine = llvm.create_mcjit_compiler(llvm_ir_parsed, target_machine)
+        engine.finalize_object()
 
-    engine = llvm.create_mcjit_compiler(llvm_ir_parsed, target_machine)
-    engine.finalize_object()
+        # Run the function with the name 'main'. This is the entry point function of the entire program
+        entry = engine.get_function_address('main')
+        cfunc = CFUNCTYPE(c_int)(entry)
 
-    # Run the function with the name 'main'. This is the entry point function of the entire program
-    entry = engine.get_function_address('main')
-    cfunc = CFUNCTYPE(c_int)(entry)
+        st = time.time()
 
-    st = time.time()
+        result = cfunc()
 
-    result = cfunc()
+        et = time.time()
 
-    et = time.time()
+        print(f'\n\nProgram returned: {result}\n=== Executed in {round((et - st) * 1000, 6)} ms. ===')
 
-    print(f'\n\nProgram returned: {result}\n=== Executed in {round((et - st) * 1000, 6)} ms. ===')
+    if DEBUG_C:
+        import subprocess
+
+        c: C_Compiler = C_Compiler()
+        c_src: str = c.compile(node=program)
+
+        with open("./debug/test.c", "w") as f:
+            f.write(c_src)
+
+        compilation_result = subprocess.run(["gcc", "-o", os.path.abspath("./debug/test.exe"), os.path.abspath("./debug/test.c")])
+        if compilation_result.returncode == 0:
+            print("Compilation successful")
+
+            execution_result = subprocess.run(["./debug/test.exe"])
+            print(f"Execution Result - {execution_result.returncode}")
+
+        else:
+            print(f"Compilation failed - {compilation_result.returncode}")
+            exit(1)

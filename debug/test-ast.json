@@ -2,36 +2,6 @@
    "Program": {
       "statements": [
          {
-            "FromImportStatement": {
-               "token": "from",
-               "file_path": "./debug/pallet.lime",
-               "imported_idents": [
-                  {
-                     "type": "IDENT",
-                     "literal": "add"
-                  }
-               ]
-            }
-         },
-         {
-            "FromImportStatement": {
-               "token": "from",
-               "file_path": "./debug/pallet.lime",
-               "imported_idents": [
-                  {
-                     "type": "IDENT",
-                     "literal": "sub"
-                  }
-               ]
-            }
-         },
-         {
-            "ImportStatement": {
-               "token": "import",
-               "file_path": "./debug/pallet.lime"
-            }
-         },
-         {
             "FunctionStatement": {
                "type": "FunctionStatement",
                "name": {
@@ -44,60 +14,33 @@
                   "type": "BlockStatement",
                   "statements": [
                      {
-                        "type": "ExpressionStatement",
-                        "expr": {
-                           "type": "CallExpression",
-                           "function": {
-                              "type": "IdentifierLiteral",
-                              "value": "printf"
-                           },
-                           "arguments": [
-                              {
-                                 "type": "StringLiteral",
-                                 "value": "gimme: %i %i\\n"
-                              },
-                              {
-                                 "type": "CallExpression",
-                                 "function": {
-                                    "type": "IdentifierLiteral",
-                                    "value": "add"
-                                 },
-                                 "arguments": [
-                                    {
-                                       "type": "IntegerLiteral",
-                                       "value": 1
-                                    },
-                                    {
-                                       "type": "IntegerLiteral",
-                                       "value": 2
-                                    }
-                                 ]
-                              },
-                              {
-                                 "type": "CallExpression",
-                                 "function": {
-                                    "type": "IdentifierLiteral",
-                                    "value": "sub"
-                                 },
-                                 "arguments": [
-                                    {
-                                       "type": "IntegerLiteral",
-                                       "value": 3
-                                    },
-                                    {
-                                       "type": "IntegerLiteral",
-                                       "value": 2
-                                    }
-                                 ]
-                              }
-                           ]
+                        "type": "LetStatement",
+                        "name": {
+                           "type": "IdentifierLiteral",
+                           "value": "a"
+                        },
+                        "value": {
+                           "type": "StringLiteral",
+                           "value": "apples"
+                        },
+                        "value_type": "str"
+                     },
+                     {
+                        "type": "AssignStatement",
+                        "identifier": {
+                           "type": "IdentifierLiteral",
+                           "value": "a"
+                        },
+                        "value": {
+                           "type": "StringLiteral",
+                           "value": "bubbles"
                         }
                      },
                      {
                         "type": "ReturnStatement",
                         "return_value": {
                            "type": "IntegerLiteral",
-                           "value": 0
+                           "value": 1
                         }
                      }
                   ]

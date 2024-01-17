@@ -1,0 +1,8 @@
+1. Verify functions return appropriately
+    1.1. Ints *good*
+    1.2. Floats *good*
+    1.3. Strings (currently only works when strings have a length of 7)
+    1.4. Booleans *good*
+    1.5. Void *good*
+
+2. 

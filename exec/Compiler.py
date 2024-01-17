@@ -43,7 +43,7 @@ class Compiler:
         # Keeping track of defined classes
         self.class_map: dict[str, ClassInfo] = {}
 
-        # Defining a builtin functions
+        # Defining a builtin functions / names
         self.__initialize_builtins()
 
         # Current Builder
@@ -57,6 +57,12 @@ class Compiler:
 
         # Dict to hold pre-parsed pallets
         self.parsed_pallets: dict[str, PreParsedProgram] = {}
+
+        # Temporary external functions
+        malloc_t = ir.FunctionType(ir.IntType(8).as_pointer(), [ir.IntType(32)])
+        self.externs: dict[str, ir.Function] = {
+            'malloc': ir.Function(self.module, malloc_t, name="malloc")
+        }
     
     def inc_counter(self) -> int:
         self.counter += 1
@@ -106,7 +112,23 @@ class Compiler:
             )
             return ir.Function(self.module, fnty, 'printf')
         
+        def __init_booleans() -> None:
+            bool_type: ir.Type = self.type_map['bool']
+
+            true_var = ir.GlobalVariable(self.module, bool_type, 'true')
+            true_var.initializer = ir.Constant(bool_type, 1)
+            true_var.global_constant = True
+            false_var = ir.GlobalVariable(self.module, bool_type, 'false')
+            false_var.initializer = ir.Constant(bool_type, 0)
+            false_var.global_constant = True
+
+            return true_var, false_var
+        
         self.variables['printf'] = (__init_print(), ir.IntType(32))
+
+        true_var, false_var = __init_booleans()
+        self.variables['true'] = (true_var, true_var.type)
+        self.variables['false'] = (false_var, false_var.type)
     
     # region Visit Methods
     def __visit_program(self, node: Program) -> None:
@@ -266,6 +288,10 @@ class Compiler:
 
         # Compile the body of the function
         self.compile(body)
+
+        # If the function is a void type, create the `ret void` instruction
+        if node.return_type == "void":
+            self.builder.ret_void()
 
         # Removing the function's variables so it cannot be accessed by other functions
         self.variables = previous_variables
@@ -459,14 +485,14 @@ class Compiler:
                 node: StringLiteral = node
                 string, Type = self.__convert_string(node.value)
                 return string, Type
+
             case "IdentifierLiteral":
                 node: IdentifierLiteral = node
                 ptr, Type = self.variables[node.value]
                 return self.builder.load(ptr), Type
             case "BooleanLiteral":
                 node: BooleanLiteral = node
-                value, Type = node.value, self.type_map['bool']
-                return ir.Constant(Type, value), Type
+                return ir.Constant(ir.IntType(1), 1 if node.value else 0), ir.IntType(1)
             
             # Expression Values
             case "InfixExpression":
@@ -485,13 +511,13 @@ class Compiler:
         buf = bytearray((' ' * n).encode('ascii'))
         buf[-1] = 0
         buf[:-1] = string.encode('utf8')
+
         return ir.Constant(ir.ArrayType(ir.IntType(8), n), buf), ir.ArrayType(ir.IntType(8), n)
     # endregion
 
     # region Builtin Functions
     def builtin_printf(self, params: list, return_type: ir.Type) -> None:
         """ Basic C builtin printf """
-
         format = params[0]
         params = params[1:]
         zero = ir.Constant(ir.IntType(32),0)
@@ -501,5 +527,9 @@ class Compiler:
         format = self.builder.gep(format, [zero, zero])
         format = self.builder.bitcast(format, ir.IntType(8).as_pointer())
         func,_ = self.variables['printf']
+        params = [self.builder.zext(param, ir.IntType(32)) if param.type == ir.IntType(1) else param for param in params]
+        params = [param if param.type != ir.FloatType() else self.builder.fpext(param, ir.DoubleType()) for param in params]
         return self.builder.call(func,[format,*params])
+
+
     # endregion

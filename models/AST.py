@@ -130,7 +130,7 @@ class LetStatement(Statement):
     
     def json(self) -> dict:
         return {
-            "token": self.token_literal(),
+            "type": "LetStatement",
             "name": self.name.json(),
             "value": self.value.json(),
             "value_type": self.value_type
