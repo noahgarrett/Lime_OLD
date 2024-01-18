@@ -121,8 +121,8 @@ if __name__ == '__main__':
         if compilation_result.returncode == 0:
             print("Compilation successful")
 
-            execution_result = subprocess.run(["./debug/test.exe"])
-            print(f"Execution Result - {execution_result.returncode}")
+            # execution_result = subprocess.run(["./debug/test.exe"])
+            # print(f"Execution Result - {execution_result.returncode}")
 
         else:
             print(f"Compilation failed - {compilation_result.returncode}")

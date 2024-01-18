@@ -51,6 +51,8 @@ class C_Compiler:
                 return self.__visit_assign_statement(node)
             
             # Expressions
+            case "IfExpression":
+                return self.__visit_if_expression(node)
 
             # Literals
             case "IdentifierLiteral":
@@ -166,6 +168,25 @@ class C_Compiler:
         assign_template = assign_template.replace('{value}', value)
 
         return assign_template
+    
+    def __visit_if_expression(self, node: IfExpression) -> str:
+        condition: Expression = self.compile(node.condition)
+        consequence: BlockStatement = self.compile(node.consequence)
+        alternative: BlockStatement = self.compile(node.alternative) if node.alternative is not None else None
+
+        if_template: str = "if ({condition}) { {consequence} }"
+        else_template: str = " else { {alternative} }"
+
+        # Populate the template
+        if_template = if_template.replace('{condition}', condition)
+        if_template = if_template.replace('{consequence}', consequence)
+
+        if alternative:
+            if_template += else_template
+            if_template.replace('{alternative}', alternative)
+
+        return if_template
+
     # endregion
 
     # region Expressions

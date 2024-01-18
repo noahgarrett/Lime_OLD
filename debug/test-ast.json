@@ -14,26 +14,34 @@
                   "type": "BlockStatement",
                   "statements": [
                      {
-                        "type": "LetStatement",
-                        "name": {
-                           "type": "IdentifierLiteral",
-                           "value": "a"
-                        },
-                        "value": {
-                           "type": "StringLiteral",
-                           "value": "apples"
-                        },
-                        "value_type": "str"
-                     },
-                     {
-                        "type": "AssignStatement",
-                        "identifier": {
-                           "type": "IdentifierLiteral",
-                           "value": "a"
-                        },
-                        "value": {
-                           "type": "StringLiteral",
-                           "value": "bubbles"
+                        "type": "ExpressionStatement",
+                        "expr": {
+                           "type": "IfExpression",
+                           "condition": {
+                              "type": "InfixExpression",
+                              "left_node": {
+                                 "type": "IntegerLiteral",
+                                 "value": 1
+                              },
+                              "operator": "==",
+                              "right_node": {
+                                 "type": "IntegerLiteral",
+                                 "value": 1
+                              }
+                           },
+                           "consequence": {
+                              "type": "BlockStatement",
+                              "statements": [
+                                 {
+                                    "type": "ReturnStatement",
+                                    "return_value": {
+                                       "type": "IntegerLiteral",
+                                       "value": 3
+                                    }
+                                 }
+                              ]
+                           },
+                           "alternative": null
                         }
                      },
                      {
