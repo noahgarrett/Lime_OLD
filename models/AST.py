@@ -310,7 +310,13 @@ class ForStatement(Statement):
         return "ForStatement"
     
     def json(self) -> dict:
-        return super().json()
+        return {
+            "type": self.type(),
+            "initializer": self.initializer.json(),
+            "condition": self.condition.json(),
+            "increment": self.increment.json(),
+            "body": self.body.json()
+        }
     
 class FunctionStatement(Statement):
     def __init__(self, token: Token, parameters: list = [], body: BlockStatement = None, name = None, return_type: str = None) -> None:

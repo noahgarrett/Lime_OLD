@@ -6,6 +6,29 @@
                "type": "FunctionStatement",
                "name": {
                   "type": "IdentifierLiteral",
+                  "value": "test_string"
+               },
+               "return_type": "str",
+               "parameters": [],
+               "body": {
+                  "type": "BlockStatement",
+                  "statements": [
+                     {
+                        "type": "ReturnStatement",
+                        "return_value": {
+                           "type": "StringLiteral",
+                           "value": "apples"
+                        }
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "FunctionStatement": {
+               "type": "FunctionStatement",
+               "name": {
+                  "type": "IdentifierLiteral",
                   "value": "main"
                },
                "return_type": "int",
@@ -14,35 +37,32 @@
                   "type": "BlockStatement",
                   "statements": [
                      {
-                        "type": "ExpressionStatement",
-                        "expr": {
-                           "type": "IfExpression",
-                           "condition": {
-                              "type": "InfixExpression",
-                              "left_node": {
-                                 "type": "IntegerLiteral",
-                                 "value": 1
-                              },
-                              "operator": "==",
-                              "right_node": {
-                                 "type": "IntegerLiteral",
-                                 "value": 1
-                              }
+                        "type": "LetStatement",
+                        "name": {
+                           "type": "IdentifierLiteral",
+                           "value": "a"
+                        },
+                        "value": {
+                           "type": "CallExpression",
+                           "function": {
+                              "type": "IdentifierLiteral",
+                              "value": "test_string"
                            },
-                           "consequence": {
-                              "type": "BlockStatement",
-                              "statements": [
-                                 {
-                                    "type": "ReturnStatement",
-                                    "return_value": {
-                                       "type": "IntegerLiteral",
-                                       "value": 3
-                                    }
-                                 }
-                              ]
-                           },
-                           "alternative": null
-                        }
+                           "arguments": []
+                        },
+                        "value_type": "str"
+                     },
+                     {
+                        "type": "LetStatement",
+                        "name": {
+                           "type": "IdentifierLiteral",
+                           "value": "b"
+                        },
+                        "value": {
+                           "type": "IdentifierLiteral",
+                           "value": "a"
+                        },
+                        "value_type": "str"
                      },
                      {
                         "type": "ReturnStatement",

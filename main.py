@@ -3,6 +3,7 @@ from exec.Parser import Parser
 from exec.Compiler import Compiler
 
 from exec.C_Compiler import C_Compiler
+from exec.Py_Compiler import Py_Compiler
 
 from models.AST import Program
 from models.Token import TokenType, Token
@@ -20,8 +21,9 @@ DEBUG_LEXER: bool = False
 DEBUG_PARSER: bool = True
 DEBUG_IR: bool = True
 
-DEBUG_LLVM: bool = False
-DEBUG_C: bool = True
+DEBUG_LLVM: bool = True
+DEBUG_C: bool = False
+DEBUG_PY: bool = False
 
 # pyinstaller --onefile --name lime main.py
 
@@ -127,3 +129,12 @@ if __name__ == '__main__':
         else:
             print(f"Compilation failed - {compilation_result.returncode}")
             exit(1)
+
+    if DEBUG_PY:
+        c: Py_Compiler = Py_Compiler()
+        py_src: str = c.compile(node=program)
+
+        with open("./debug/test.py", "w") as f:
+            f.write(py_src)
+
+        exec(py_src)

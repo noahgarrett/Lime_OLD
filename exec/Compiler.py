@@ -31,7 +31,8 @@ class Compiler:
             'float': ir.FloatType(),
             'double': ir.DoubleType(),
             'void': ir.VoidType(),
-            'str': ir.ArrayType(ir.IntType(8), 1)  # String = array of chars (int8)
+            # 'str': ir.ArrayType(ir.IntType(8), 1)  # String = array of chars (int8)
+            'str': ir.PointerType(ir.IntType(8)),
         }
 
         # Initializing the main module
@@ -235,6 +236,10 @@ class Compiler:
     def __visit_return_statement(self, node: ReturnStatement) -> None:
         value = node.return_value
         value, Type = self.__resolve_value(value)
+
+        if isinstance(Type, ir.ArrayType):
+            value = self.builder.bitcast(value, self.type_map['str'])
+
         self.builder.ret(value)
 
     def __visit_class_statement(self, node: ClassStatement) -> None:
@@ -512,7 +517,13 @@ class Compiler:
         buf[-1] = 0
         buf[:-1] = string.encode('utf8')
 
-        return ir.Constant(ir.ArrayType(ir.IntType(8), n), buf), ir.ArrayType(ir.IntType(8), n)
+        # return ir.Constant(ir.ArrayType(ir.IntType(8), n), buf), ir.ArrayType(ir.IntType(8), n)
+        # true_var.initializer = ir.Constant(bool_type, 1)
+        string_type = ir.ArrayType(ir.IntType(8), n)
+        string_var = ir.GlobalVariable(self.module, string_type, name=f'__str_{self.inc_counter()}')
+        string_var.initializer = ir.Constant(string_type, buf)
+
+        return string_var, string_type
     # endregion
 
     # region Builtin Functions
