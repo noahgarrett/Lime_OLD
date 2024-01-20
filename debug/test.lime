@@ -5,7 +5,7 @@ fn test_string() -> str {
 fn main() -> int {
     let a: str = test_string();
 
-    let b: str = a;
+    printf(a);
 
     return 1;
 }

@@ -25,5 +25,7 @@ main_entry:
   %".5" = load i8*, i8** %".3"
   %".6" = alloca i8*
   store i8* %".5", i8** %".6"
+  %".8" = getelementptr i8*, i8** %".6", i32 0, i32 0
+  %".9" = call i32 (i8*, ...) @"printf"(i8* %".8")
   ret i32 1
 }
