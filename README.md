@@ -18,13 +18,16 @@ yeet bruh gimme_42() -> int {
 ```
 
 ```js
-// Example GenZ Approved Program `main.lime`
-from "pallet.lime" trans gimmie_42 rn
+// Example GenZ Approved Program
 
-ass Box { // **Classes Under Development**
+ass Box {
     bruh __init__() -> void {
         
     }
+}
+
+bruh gimmie_42() -> int {
+    pause 42 rn
 }
 
 bruh main() -> int {
@@ -37,6 +40,32 @@ bruh main() -> int {
     }
 
     pause a rn
+}
+```
+
+```js
+// Example Meta Approved Program
+
+class Box {
+    fn __init__() -> void {
+        
+    }
+}
+
+fn gimmie_42() -> int {
+    return 42;
+}
+
+fn main() -> int {
+    let a: int = 25;
+
+    if a == 25 {
+        printf("oh boi %i\n", gimmie_42());
+    } else {
+        printf("yesssssir");
+    }
+
+    return a;
 }
 ```
 
